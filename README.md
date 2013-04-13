@@ -7,9 +7,14 @@ Authy.com API wrapper for Node.js
 Installation
 ------------
 
-For now this module is only available on Github.
+You can install this module from Github, but can be unstable:
 
 	git clone https://github.com/fvdm/nodejs-authy
+	npm install ./nodejs-authy
+
+Or from the NPM registry, which is always the latest stable release:
+
+	npm install authy-node
 
 
 Setup
@@ -19,7 +24,7 @@ You need to signup at [Authy](http://authy.com/) and create an app in your [Dash
 Once done take note of the two *different* app tokens. The one on the left is for real production use, the other on the right is only for safe testing.
 
 ```js
-var authy = require('/path/to/nodejs-authy')
+var authy = require('authy-node')
 
 authy.api.mode = 'sandbox'
 authy.api.token = 'abc123def456'
