@@ -1,0 +1,29 @@
+{
+  "author": {
+    "name":               "Franklin van de Meent",
+    "email":              "fr@nkl.in",
+    "url":                "http://frankl.in"
+  },
+  "name":                 "authy",
+  "description":          "Authy API wrapper",
+  "version":              "1.0.0",
+  "repository": {
+    "type":               "git",
+    "url":                "git://github.com/fvdm/nodejs-authy.git"
+  },
+  "bugs": {
+    "url":                "https://github.com/fvdm/nodejs-authy/issues"
+  },
+  "main":                 "authy.js",
+  "dependencies":         {},
+  "devDependencies":      {},
+  "optionalDependencies": {},
+  "engines": {
+    "node":               ">=0.10.0"
+  },
+  "keywords":             ["authy", "authentication", "security", "api"],
+  "license": {
+    "type":               "Public Domain",
+    "url":                "https://github.com/fvdm/nodejs-authy/raw/master/UNLICENSE"
+  }
+}
