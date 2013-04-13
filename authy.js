@@ -38,9 +38,9 @@ For more information, please refer to <http://unlicense.org>
 
 var querystring = require('querystring')
   , authy = {
-		api: {},
-		app: {}
-	}
+       api: {},
+       app: {}
+    }
 
 
 // Settings
