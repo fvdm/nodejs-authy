@@ -118,7 +118,11 @@ function talk( method, path, fields, callback ) {
 	var options = {
 		host: 'api.authy.com',
 		path: '/protected/json/'+ path +'?api_key='+ authy.api.token,
-		method: method
+		method: method,
+		headers: {
+			'Accept': 'application/json',
+			'User-Agent': 'authy.js (https://github.com/fvdm/nodejs-authy)'
+		}
 	}
 	
 	var params = querystring.stringify( fields )
@@ -128,10 +132,8 @@ function talk( method, path, fields, callback ) {
 			options.path += '&'+ params
 		}
 	} else {
-		options.headers = {
-			'Content-Type': 'application/x-www-form-urlencoded',
-			'Content-Length': params.length
-		}
+		options.headers['Content-Type'] = 'application/x-www-form-urlencoded'
+		options.headers['Content-Length'] = params.length
 	}
 	
 	if( authy.api.mode === 'production' ) {
