@@ -37,10 +37,10 @@ For more information, please refer to <http://unlicense.org>
 */
 
 var querystring = require('querystring')
-  , authy = {
-       api: {},
-       app: {}
-    }
+var authy = {
+	api: {},
+	app: {}
+}
 
 
 // Settings
