@@ -162,7 +162,7 @@ function talk( method, path, fields, callback ) {
 			var pos = 0
 			var err = null
 			
-			for( var d in data ) {
+			for( var d = 0; d < data.length; d++ ) {
 				data[d].copy( buf, pos )
 				pos += data[d].length
 			}
