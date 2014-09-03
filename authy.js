@@ -70,159 +70,159 @@ authy.verify = function( userId, token, force, callback ) {
 	} else if( force === true ) {
 		var fields = {force: true}
 	}
-	
-	talk( 'GET', 'verify/'+ token +'/'+ userId, fields, callback )
+
+  talk( 'GET', 'verify/'+ token +'/'+ userId, fields, callback )
 }
 
 
 // SMS
 authy.sms = function( userId, force, callback ) {
-	if( typeof force === 'function' ) {
-		var callback = force
-		var fields = null
-	} else if( force === true ) {
-		var fields = {force: true}
-	}
-	
-	talk( 'GET', 'sms/'+ userId, fields, callback )
+  if( typeof force === 'function' ) {
+    var callback = force
+    var fields = null
+  } else if( force === true ) {
+    var fields = {force: true}
+  }
+
+  talk( 'GET', 'sms/'+ userId, fields, callback )
 }
 
 
 // App
 authy.app.details = function( callback ) {
-	talk( 'GET', 'app/details', callback )
+  talk( 'GET', 'app/details', callback )
 }
 
 authy.app.stats = function( callback ) {
-	talk( 'GET', 'app/stats', callback )
+  talk( 'GET', 'app/stats', callback )
 }
 
 
 // Communicate
 function talk( method, path, fields, callback ) {
-	if( typeof fields === 'function' ) {
-		var callback = fields
-		fields = {}
-	}
-	
-	// prevent multiple calls
-	var complete = false
-	var doCallback = function( err, data ) {
-		if( !complete ) {
-			complete = true
-			callback( err, data )
-		}
-	}
-	
-	// build request
-	var options = {
-		host: 'api.authy.com',
-		path: '/protected/json/'+ path +'?api_key='+ authy.api.token,
-		method: method,
-		headers: {
-			'Accept': 'application/json',
-			'User-Agent': 'authy.js (https://github.com/fvdm/nodejs-authy)'
-		}
-	}
-	
-	var params = querystring.stringify( fields )
-	
-	if( method === 'GET' ) {
-		if( params !== '' ) {
-			options.path += '&'+ params
-		}
-	} else {
-		options.headers['Content-Type'] = 'application/x-www-form-urlencoded'
-		options.headers['Content-Length'] = params.length
-	}
-	
-	if( authy.api.mode === 'production' ) {
-		var request = require('https').request( options )
-	} else {
-		options.host = 'sandbox-'+ options.host
-		var request = require('http').request( options )
-	}
-	
-	// response
-	request.on( 'response', function( response ) {
-		var data = []
-		var size = 0
-		
-		response.on( 'data', function( ch ) {
-			data.push( ch )
-			size += ch.length
-		})
-		
-		response.on( 'close', function() {
-			var err = new Error('request dropped')
-			doCallback( err )
-		})
-		
-		response.on( 'end', function() {
-			// convert data to string
-			var buf = new Buffer( size )
-			var pos = 0
-			var err = null
-			
-			for( var d = 0; d < data.length; d++ ) {
-				data[d].copy( buf, pos )
-				pos += data[d].length
-			}
-			
-			data = buf.toString().trim()
-			
-			if( ! data.match( /^\{.*\}$/ ) ) {
-				err = new Error('not json')
-			} else {
-				data = JSON.parse( data )
-				
-				// process HTTP status
-				switch( response.statusCode ) {
-					case 400:
-						err = new Error('bad request')
-						err.apiMessage = 'There was an error with the request.'
-						break
-					
-					case 401:
-						err = new Error('unauthorized')
-						err.apiMessage = 'Token is invalid.'
-						break
-						
-					case 503:
-						err = new Error('service unavailable')
-						err.apiMessage = 'Many reasons, body will include details.'
-						break
-						
-					case 200:
-						if( data.errors !== undefined ) {
-							err = new Error('API error')
-							err.apiErrors = data.errors
-						}
-						break
-				}
-			}
-			
-			// do callback
-			if( err ) {
-				err.request = options
-				err.code = response.statusCode
-				err.headers = response.headers
-				err.body = data
-				doCallback( err )
-			} else {
-				doCallback( null, data )
-			}
-		})
-	})
-	
-	// error
-	request.on( 'error', function( error ) {
-		var err = new Error('request failed')
-		err.requestError = error
-		err.request = options
-		doCallback( err )
-	})
-	
+  if( typeof fields === 'function' ) {
+    var callback = fields
+    fields = {}
+  }
+
+  // prevent multiple calls
+  var complete = false
+  var doCallback = function( err, data ) {
+    if( !complete ) {
+      complete = true
+      callback( err, data )
+    }
+  }
+
+  // build request
+  var options = {
+    host: 'api.authy.com',
+    path: '/protected/json/'+ path +'?api_key='+ authy.api.token,
+    method: method,
+    headers: {
+      'Accept': 'application/json',
+      'User-Agent': 'authy.js (https://github.com/fvdm/nodejs-authy)'
+    }
+  }
+
+  var params = querystring.stringify( fields )
+
+  if( method === 'GET' ) {
+    if( params !== '' ) {
+      options.path += '&'+ params
+    }
+  } else {
+    options.headers['Content-Type'] = 'application/x-www-form-urlencoded'
+    options.headers['Content-Length'] = params.length
+  }
+
+  if( authy.api.mode === 'production' ) {
+    var request = require('https').request( options )
+  } else {
+    options.host = 'sandbox-'+ options.host
+    var request = require('http').request( options )
+  }
+
+  // response
+  request.on( 'response', function( response ) {
+    var data = []
+    var size = 0
+
+    response.on( 'data', function( ch ) {
+      data.push( ch )
+      size += ch.length
+    })
+
+    response.on( 'close', function() {
+      var err = new Error('request dropped')
+      doCallback( err )
+    })
+
+    response.on( 'end', function() {
+      // convert data to string
+      var buf = new Buffer( size )
+      var pos = 0
+      var err = null
+
+      for( var d = 0; d < data.length; d++ ) {
+        data[d].copy( buf, pos )
+        pos += data[d].length
+      }
+
+      data = buf.toString().trim()
+
+      if( ! data.match( /^\{.*\}$/ ) ) {
+        err = new Error('not json')
+      } else {
+        data = JSON.parse( data )
+
+        // process HTTP status
+        switch( response.statusCode ) {
+          case 400:
+            err = new Error('bad request')
+            err.apiMessage = 'There was an error with the request.'
+            break
+
+          case 401:
+            err = new Error('unauthorized')
+            err.apiMessage = 'Token is invalid.'
+            break
+
+          case 503:
+            err = new Error('service unavailable')
+            err.apiMessage = 'Many reasons, body will include details.'
+            break
+
+          case 200:
+            if( data.errors !== undefined ) {
+              err = new Error('API error')
+              err.apiErrors = data.errors
+            }
+            break
+        }
+      }
+
+      // do callback
+      if( err ) {
+        err.request = options
+        err.code = response.statusCode
+        err.headers = response.headers
+        err.body = data
+        doCallback( err )
+      } else {
+        doCallback( null, data )
+      }
+    })
+  })
+
+  // error
+  request.on( 'error', function( error ) {
+    var err = new Error('request failed')
+    err.requestError = error
+    err.request = options
+    doCallback( err )
+  })
+
 	// complete
 	if( method === 'GET' || params === '' ) {
 		request.end()
