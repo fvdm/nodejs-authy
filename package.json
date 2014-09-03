@@ -21,7 +21,7 @@
   "engines": {
     "node":               ">=0.10.0"
   },
-  "keywords":             ["authy", "authentication", "security", "api"],
+  "keywords":             ["authy", "api", "authentication", "security", "token", "two factor"],
   "license": {
     "type":               "Public Domain",
     "url":                "https://github.com/fvdm/nodejs-authy/raw/master/UNLICENSE"
